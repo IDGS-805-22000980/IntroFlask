@@ -1,0 +1,150 @@
+{% block container %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTLOPOLIS</title>
+    <style>
+        /* Estilo general */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #001f3f, #0074D9);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Contenedor principal */
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Encabezados */
+        h1 {
+            color: #FFD700; /* Amarillo */
+            font-size: 2.5em;
+        }
+
+        h3 {
+            border-bottom: 2px solid #FFD700;
+            display: inline-block;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        /* Etiquetas y entradas */
+        label {
+            display: block;
+            font-size: 1.2em;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 90%;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 1em;
+            text-align: center;
+        }
+
+        /* Radio Buttons */
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        /* Botones */
+        .button-group {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #FFD700;
+            color: black;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #FFA500; /* Naranja */
+            transform: scale(1.05);
+        }
+
+        /* Mensajes de error */
+        .mensaje-error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Campo solo lectura */
+        input[readonly] {
+            background: #ccc;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cinépolis</h1>
+
+        {% if mensaje %}
+            <p class="mensaje-error">{{ mensaje }}</p>
+        {% endif %}
+
+        <form action="/cinepolis" method="POST">
+            <h3>Entradas</h3>
+
+            <label>Nombre</label>
+            <input type="text" name="nombre" value="{{ nombre|default('') }}" required>
+
+            <label>Cantidad Compradores</label>
+            <input type="number" name="cantidad_compradores" value="{{ cantidad_compradores|default(0) }}" required min="1">
+
+            <label>Tarjeta Cineco</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="tarjeta" value="si" {% if tarjeta == 'si' %}checked{% endif %}> SI
+                </label>
+                <label>
+                    <input type="radio" name="tarjeta" value="no" {% if tarjeta == 'no' %}checked{% endif %}> NO
+                </label>
+            </div>
+
+            <label>Cantidad de Boletos</label>
+            <input type="number" name="cantidad_boletos" value="{{ cantidad_boletos|default(0) }}" required min="1">
+
+            <h3>Salidas</h3>
+
+            <label>Valor a pagar</label>
+            <input type="text" name="valor_pagar" id="valor_pagar" value="{{ total|default('') }}" readonly>
+
+            <h3>Acciones</h3>
+            <div class="button-group">
+                <button type="submit">Procesar</button>
+                <button type="button" onclick="window.location.href='/'">Salir</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+{% endblock %}

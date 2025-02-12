@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app=Flask(__name__)
 
@@ -50,6 +50,111 @@ def form1():
             </form>
 
             '''
+@app.route("/OperasBas")
+def operas():
+    return render_template("OperasBas.html", n1="", n2="", operacion="", resultado="")
+
+@app.route("/resultado", methods=["POST"])
+def result():
+    num1 = request.form.get("n1")
+    num2 = request.form.get("n2")
+    operacion = request.form.get("operacion")
+    resultado = ""
+
+    try:
+        num1 = float(num1)
+        num2 = float(num2)
+
+        if operacion == "suma":
+            resultado = num1 + num2
+        elif operacion == "resta":
+            resultado = num1 - num2
+        elif operacion == "multiplicacion":
+            resultado = num1 * num2
+        elif operacion == "divicion":
+            if num2 != 0:  # Verifica que no se divida por cero
+                resultado = num1 / num2
+            else:
+                resultado = "Error: División por cero no permitida."
+    except ValueError:
+        resultado = "Error: Entrada no válida."
+
+    # Renderiza la misma plantilla con los valores ingresados y el resultado
+    return render_template("OperasBas.html", n1=request.form.get("n1"), n2=request.form.get("n2"), operacion=operacion, resultado=resultado)
+    
+    """
+    if request.method == "POST":
+        num1 = request.form.get("n1")
+        num2 = request.form.get("n2")
+        return "La multiplicación de {} x {} = {}".format(num1,num2, str(int(num1)*int(num2)))
+"""
+
+
+# Lógica para realizar la consulta del Cinépolis
+class Personas:
+    def __init__(self):
+        self.historial = []
+    
+    def calcularTotal(self, boletos, tarjeta):
+        if boletos <= 0:
+            return 0 
+        
+        if boletos <= 2:
+            cost = 12 * boletos
+        elif boletos <= 5:
+            cost = 12 * boletos * 0.90
+        else:
+            cost = 12 * boletos * 0.85
+        
+        if tarjeta == "si":
+            cost *= 0.90 
+        
+        return round(cost, 2)
+
+personas = Personas()
+
+@app.route('/cinepolis', methods=['GET', 'POST'])
+def cinepolis():
+    mensaje = None
+    nombre = ""
+    cantidad_compradores = 0
+    tarjeta = "no"
+    cantidad_boletos = 0
+    total = 0
+
+    if request.method == "POST":
+        nombre = request.form.get('nombre', "").strip()
+        tarjeta = request.form.get('tarjeta', "no")
+
+        try:
+            cantidad_compradores = int(request.form.get('cantidad_compradores', 0))
+            cantidad_boletos = int(request.form.get('cantidad_boletos', 0))
+        except ValueError:
+            mensaje = "Por favor, ingrese valores numéricos válidos."
+            return render_template('cinepolis.html', mensaje=mensaje)
+
+        if cantidad_compradores <= 0:
+            mensaje = "Debe haber al menos un comprador."
+        elif cantidad_boletos <= 0:
+            mensaje = "Debe comprar al menos un boleto."
+        else:
+            max_boletos = cantidad_compradores * 7
+            if cantidad_boletos > max_boletos:
+                mensaje = f"Has excedido el número máximo de boletos permitidos ({max_boletos})."
+            else:
+                total = personas.calcularTotal(cantidad_boletos, tarjeta)
+                personas.historial.append((nombre, total))
+
+    return render_template(
+        'cinepolis.html',
+        mensaje=mensaje,
+        nombre=nombre,
+        cantidad_compradores=cantidad_compradores,
+        tarjeta=tarjeta,
+        cantidad_boletos=cantidad_boletos,
+        total=total
+    )
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=3000)
