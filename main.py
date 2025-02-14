@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request
 
+import forms
+
 app=Flask(__name__)
 
 @app.route("/")
@@ -7,6 +9,24 @@ def index():
     titulo="IDGS801"
     lista=["Pedro", "Juan", "Mario"]
     return render_template("index.html",titulo=titulo,lista=lista)
+
+@app.route("/alumnos", methods=["POST", "GET"])
+def alumnos():
+    mat = ''
+    nom = ''
+    ape = ''
+    email = ''
+    alumno_clase = forms.UserForm(request.form)
+    if request.method == "POST":
+        mat = alumno_clase.matricula.data
+        ape = alumno_clase.apellido.data
+        nom = alumno_clase.nombre.data
+        email = alumno_clase.email.data
+        print('Nombre {}'.format(nom))
+    return render_template("Alumnos.html", form=alumno_clase)
+
+        
+
 
 @app.route("/ejemplo1")
 def ejemplo1():
