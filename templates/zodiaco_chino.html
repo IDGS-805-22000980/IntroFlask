@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block container %}
+{% import "_macros.html" as macros %}
+<h1 class="text-center">Zodiaco Chino</h1>
+
+
+<div class="row">
+    <div class="span6">
+        <h3 class="text-center">Datos personales</h3>
+        <form action="" method="post" novalidate>
+            <div class="control-group">
+                {{ macros.campoNuevo(form.nombre, class='input-xlarge') }}
+            </div>
+            <div class="control-group">
+                {{ macros.campoNuevo(form.apePat, class='input-xlarge') }}
+            </div>
+            <div class="control-group">
+                {{ macros.campoNuevo(form.apeMat, class='input-xlarge') }}
+            </div>
+
+            <h3>Fecha de Nacimiento</h3>
+            <div class="control-group">
+                {{ macros.campoNuevo(form.dia, class='input-xlarge') }}
+            </div>
+            <div class="control-group">
+                {{ macros.campoNuevo(form.mes, class='input-xlarge') }}
+            </div>
+            <div class="control-group">
+                {{ macros.campoNuevo(form.anio, class='input-xlarge') }}
+            </div>
+
+            <h3>Sexo</h3>
+            <div class="control-group">
+                {{ macros.campoNuevo(form.sexo, class='input-xlarge') }}
+            </div>
+
+            <input type="submit" value="Imprimir" class="btn btn-primary" />
+        </form>
+    </div>
+
+
+    <div class="span6">
+        <h2>Hola: {{ nombre }} {{ apePat }} {{ apeMat }}</h2>
+        <h2>Tienes {{ edad }} años</h2>
+        <h2>Tu sexo es {{ sexo }}</h2>
+        <h2>Tu signo zodiacal es: {{ signo_zodiaco }}</h2>
+
+        {% if signo_zodiaco != "Fecha no válida" %}
+        <img src="{{ url_for('static', filename='img/zodiaco_chino/' + signo_zodiaco + '.png') }}"
+            alt="{{ signo_zodiaco }}" style="max-width: 300px;">
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

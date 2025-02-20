@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
-
 import forms
+import forms_zodiaco
+from datetime import datetime
+
 
 app=Flask(__name__)
 
@@ -17,14 +19,61 @@ def alumnos():
     ape = ''
     email = ''
     alumno_clase = forms.UserForm(request.form)
-    if request.method == "POST":
+    if request.method == "POST" and alumno_clase.validate():
         mat = alumno_clase.matricula.data
         ape = alumno_clase.apellido.data
         nom = alumno_clase.nombre.data
         email = alumno_clase.email.data
         print('Nombre {}'.format(nom))
-    return render_template("Alumnos.html", form=alumno_clase)
+    return render_template("Alumnos.html", form=alumno_clase,mat=mat,nom=nom,ape=ape,email=email)
 
+
+def obtener_signo_zodiaco_chino(anio):
+    signos = ["Mono", "Gallo", "Perro", "Cerdo", "Rata", "Buey", "Tigre", "Conejo", "Dragon", "Serpiente", "Caballo", "Cabra"]
+    while anio >= 12:  
+        anio -= 12  
+    return signos[anio]
+#Sección para el Zodiaco Chino
+@app.route("/zodiaco", methods=["POST", "GET"])
+def zodiaco():
+    nombre =''
+    apePat = ''
+    apeMat = ''
+    dia = ''
+    mes = ''
+    anio = ''
+    sexo = ''
+    signo_zodiaco = ''
+    edad = ''
+    
+    zodiaco_clase = forms_zodiaco.ZodiacoForms(request.form)
+    if request.method == "POST" and zodiaco_clase.validate():
+        nombre = zodiaco_clase.nombre.data
+        apePat = zodiaco_clase.apePat.data
+        apeMat = zodiaco_clase.apeMat.data
+        dia = zodiaco_clase.dia.data
+        mes = zodiaco_clase.mes.data
+        anio = zodiaco_clase.anio.data
+        sexo = zodiaco_clase.sexo.data
+        
+        try:
+            dia = int(dia)
+            mes = int(mes)
+            anio = int(anio)
+
+            fecha_actual = datetime.now()
+            edad = fecha_actual.year - anio
+            if (mes > fecha_actual.month) or (mes == fecha_actual.month and dia > fecha_actual.day):
+                edad -= 1
+            signo_zodiaco = obtener_signo_zodiaco_chino(int(anio))
+        except ValueError:
+            edad = 0
+            signo_zodiaco = "Fecha no válida"
+        
+    
+    return render_template("zodiaco_chino.html", form=zodiaco_clase, nombre=nombre, 
+                        apePat=apePat, apeMat=apeMat, dia=dia, mes=mes, anio=anio, sexo=sexo, edad=edad, signo_zodiaco=signo_zodiaco)
+    
         
 
 

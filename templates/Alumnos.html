@@ -5,10 +5,34 @@
 
 
 <h1>Alumnos</h1>
-<form action="" method="post">
-    {{macros.campoNuevo(form.matricula)}}
-    {{macros.campoNuevo(form.nombre)}}
-    {{macros.campoNuevo(form.apellido)}}
-    {{macros.campoNuevo(form.email)}}
+<form action="" method="post", novalidate>
+
+<div class="row control-group">
+    <div class="from-groupform-group col-xs-12 floating-label-form-group controls">
+        {{macros.campoNuevo(form.matricula,class='form-control')}}
+    </div>
+</div>
+
+<div class="row control-group">
+    <div class="from-groupform-group col-xs-12 floating-label-form-group controls">
+        {{macros.campoNuevo(form.nombre,class='form-control')}}
+    </div>
+</div>
+<div class="row control-group">
+    <div class="from-groupform-group col-xs-12 floating-label-form-group controls">
+        {{macros.campoNuevo(form.apellido,class='form-control')}}
+    </div>
+</div>
+<div class="row control-group">
+    <div class="from-groupform-group col-xs-12 floating-label-form-group controls">
+        {{macros.campoNuevo(form.email,class='form-control')}}
+    </div>
+</div>
+<input type="submit" value="Guardar" class="btn btn-primary"/>
+
+<h2>Matricula: {{mat}}</h2>
+<h2>Nombre: {{nom}}</h2>
+<h2>Apellido: {{ape}}</h2>
+<h2>Email: {{email}}</h2>
 </form>
 {%endblock%}
