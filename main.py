@@ -2,9 +2,29 @@ from flask import Flask, render_template, request
 import forms
 import forms_zodiaco
 from datetime import datetime
+from flask import g #Crear variables globales
+from flask import flash #Enviar mensajes Flash tipo alertas
+from flask_wtf.csrf import CSRFProtect
 
 
 app=Flask(__name__)
+app.secret_key='esta es una clave secreta'
+csrf = CSRFProtect()
+
+#Manejo de errores de tipo 404
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.before_request
+def before_request():
+    g.nombre='Mario'
+    print("before 1")
+
+app.after_request
+def after_request(response):
+    print("after 1")
+    return response
 
 @app.route("/")
 def index():
@@ -14,6 +34,7 @@ def index():
 
 @app.route("/alumnos", methods=["POST", "GET"])
 def alumnos():
+    print("Alumno {}".format(g.nombre))
     mat = ''
     nom = ''
     ape = ''
@@ -24,7 +45,8 @@ def alumnos():
         ape = alumno_clase.apellido.data
         nom = alumno_clase.nombre.data
         email = alumno_clase.email.data
-        print('Nombre {}'.format(nom))
+        mensaje='Bienvenido {}'.format(nom)
+        flash(mensaje)
     return render_template("Alumnos.html", form=alumno_clase,mat=mat,nom=nom,ape=ape,email=email)
 
 
@@ -226,4 +248,5 @@ def cinepolis():
 
 
 if __name__ == "__main__":
+    csrf.init_app(app)
     app.run(debug=True, port=3000)
